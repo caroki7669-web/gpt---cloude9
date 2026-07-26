@@ -1,0 +1,38 @@
+name: Auto Post Video
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # كل يوم الساعة 12 ظهرًا UTC
+  workflow_dispatch: {}
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python deps
+        run: |
+          pip install edge-tts pillow requests python-dotenv \
+            google-auth-oauthlib google-auth-httplib2 google-api-python-client
+
+      - name: Restore secret files
+        working-directory: automation
+        run: |
+          echo "${{ secrets.YOUTUBE_CLIENT_SECRET_B64 }}" | base64 -d > client_secret.json
+          echo "${{ secrets.YOUTUBE_TOKEN_B64 }}" | base64 -d > token.json
+          cat > .env <<ENV
+          FB_PAGE_ID=${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN=${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          ENV
+
+      - name: Run automation
+        working-directory: automation
+        run: python3 main.py

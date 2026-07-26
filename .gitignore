@@ -44,3 +44,9 @@ gh
 # Test coverage artifacts
 coverage.out
 lcov.info
+automation/.env
+client_secret.json
+token.json
+automation/.env
+automation/client_secret.json
+automation/token.json
