@@ -50,3 +50,4 @@ token.json
 automation/.env
 automation/client_secret.json
 automation/token.json
+automation/output/
