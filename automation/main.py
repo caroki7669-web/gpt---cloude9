@@ -1,5 +1,5 @@
 import os, asyncio
-from generate_content import generate
+from generate_content import generate_unique as generate
 from generate_visuals import make_scenes
 from generate_audio import make_scene_audios
 from build_video import build_long_video

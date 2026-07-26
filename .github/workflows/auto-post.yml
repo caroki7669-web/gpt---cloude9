@@ -2,7 +2,7 @@ name: Auto Post Video
 
 on:
   schedule:
-    - cron: '0 12 * * *'   # كل يوم الساعة 12 ظهرًا UTC
+    - cron: '0 */6 * * *'   # كل 6 ساعات بالظبط
   workflow_dispatch: {}
 
 jobs:
@@ -36,3 +36,12 @@ jobs:
       - name: Run automation
         working-directory: automation
         run: python3 main.py
+
+      - name: Commit story history
+        working-directory: automation
+        run: |
+          git config user.name "Auto Bot"
+          git config user.email "bot@example.com"
+          git add story_history.json || true
+          git commit -m "تحديث سجل القصص" || echo "لا يوجد تغيير"
+          git push || echo "فشل الدفع (قد يكون بسبب صلاحيات)"

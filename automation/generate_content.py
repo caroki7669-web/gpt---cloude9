@@ -100,3 +100,31 @@ def generate(min_scenes=130):
 if __name__ == "__main__":
     story = generate()
     print(story["title"], "-", len(story["scenes"]), "مشهد")
+
+import json, os as _os
+
+HISTORY_FILE = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "story_history.json")
+
+def _load_history():
+    if _os.path.exists(HISTORY_FILE):
+        try:
+            return json.load(open(HISTORY_FILE))
+        except Exception:
+            return []
+    return []
+
+def _save_history(history):
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(history[-30:], f, ensure_ascii=False)  # آخر 30 قصة بس
+
+def generate_unique(min_scenes=130, max_tries=15):
+    history = _load_history()
+    for _ in range(max_tries):
+        story = generate(min_scenes=min_scenes)
+        signature = story["title"] + story["scenes"][0]
+        if signature not in history:
+            history.append(signature)
+            _save_history(history)
+            return story
+    # لو كل المحاولات كررت، رجّع آخر واحدة على أي حال
+    return story
